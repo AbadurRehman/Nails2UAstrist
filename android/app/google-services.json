@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "975211174234",
+    "project_id": "nail2u-artist",
+    "storage_bucket": "nail2u-artist.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975211174234:android:d7cfd1c0c57f1513243b63",
+        "android_client_info": {
+          "package_name": "com.nail2uartist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975211174234-p2o26btpfi0oe1dp4m9mlb6ne8o58ich.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6rC0R9PN2se8xWZWM_1jYGzJjZdiwwsE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975211174234-p2o26btpfi0oe1dp4m9mlb6ne8o58ich.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

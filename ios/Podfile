@@ -1,0 +1,124 @@
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+platform :ios, '13.0'
+# prepare_react_native_project!
+
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+
+
+target 'Nail2UArtist' do
+  config = use_native_modules!
+  # flags = get_default_flags()
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # to enable hermes on iOS, change `false` to `true` and then install pods
+    # :hermes_enabled => false
+# 
+    :hermes_enabled => false,
+    # :fabric_enabled => flags[:fabric_enabled],
+    # Enables Flipper.
+    #
+    # Note that if you have use_frameworks! enabled, Flipper will not work and
+    # you should disable the next line.
+    # :flipper_configuration => flipper_config,
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  # pod 'FirebaseCoreInternal', :modular_headers => true  
+  # pod 'FirebaseStorageInternal', :modular_headers => true
+  pod 'FirebaseCoreExtension', :modular_headers => true
+  pod 'FirebaseInstallations', :modular_headers => true
+  pod 'GoogleDataTransport', :modular_headers => true
+  pod 'nanopb', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+
+  rn_maps_path = '../node_modules/react-native-maps'
+   pod 'react-native-google-maps', :path => rn_maps_path
+   pod 'GoogleMaps'
+   pod 'Google-Maps-iOS-Utils'
+   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+ 
+
+  # rn_maps_path = '../node_modules/react-native-maps'
+  # pod 'react-native-google-maps', :path => rn_maps_path
+  # pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+  # pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
+  target 'Nail2UArtistTests' do
+    inherit! :complete
+    # Pods for testing
+  end
+
+  # Enables Flipper.
+  #
+  # Note that if you have use_frameworks! enabled, Flipper will not work and
+  # you should disable the next line.
+  # use_flipper!()
+
+  # post_install do |installer|
+  #   react_native_post_install(installer)
+  # end
+
+  # use_flipper!({ 'Flipper-Folly' => '2.6.0' }) # update this part
+
+  # use_flipper!({
+  #   "Flipper" => "0.134.0",
+  #   "Flipper-Folly" => "2.6.10",
+  #   "OpenSSL-Universal" => "1.1.1100"
+  # })
+
+  post_install do |installer|
+    # `sed -i -e  $'s/__IPHONE_10_0/__IPHONE_12_0/' Pods/RCT-Folly/folly/portability/Time.h`
+    # flipper_post_install(installer)
+    react_native_post_install(installer)
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings.delete "IPHONEOS_DEPLOYMENT_TARGET"
+      end
+      case target.name
+      when 'RCT-Folly'
+        target.build_configurations.each do |config|
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+        end
+      end
+    end
+  end
+
+  # post_install do |installer|
+  #   flipper_post_install(installer)
+  #   react_native_post_install(installer)
+  #   PLIST_BUDDY_PATH = '/usr/libexec/PlistBuddy'
+  #   installer.pods_project.targets.each do |target|
+  #     target.build_configurations.each do |config|
+  #       config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = "arm64"
+  #       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+  #       config.build_settings['ENABLE_BITCODE'] = 'NO'
+  #       config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+  #       if target.name == "hermes-engine"
+  #         installer.pods_project.files.each do |fileref|
+  #           if fileref.path.end_with? "hermes.xcframework"
+  #             hermes_plist_file = "#{fileref.real_path}/Info.plist"
+  #             # Patch Hermes to remove the debug symbols entry from the Info.plist (as it's not shipped with it)
+  #             # This might be removed once Hermes starts to ship with Debug symbols or we remove our
+  #             # direct dependency from the Main iOS target on "hermes.xcframework"
+  #             Open3.capture3(PLIST_BUDDY_PATH, '-c', 'Delete :AvailableLibraries:0:DebugSymbolsPath', hermes_plist_file)
+  #             Open3.capture3(PLIST_BUDDY_PATH, '-c', 'Delete :AvailableLibraries:1:DebugSymbolsPath', hermes_plist_file)
+  #             Open3.capture3(PLIST_BUDDY_PATH, '-c', 'Delete :AvailableLibraries:2:DebugSymbolsPath', hermes_plist_file)
+  #           end
+  #         end
+  #       end
+  #     end
+  #   end
+  # end
+end
